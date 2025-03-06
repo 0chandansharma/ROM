@@ -1,0 +1,276 @@
+###############################################################################
+## ROM (Range of Motion) ASSESSMENT PARAMETERS                               ##
+###############################################################################
+
+# Configure your assessment parameters here
+
+# Then open a terminal and enter:
+# rom --config config_example.toml
+# OR
+# python -m ROM.core --config config_example.toml
+
+
+[project]
+video_input = "demo.mp4"   # 'webcam' or video file path
+               # For webcam: 'webcam'
+               # For video file: 'path/to/video.mp4'
+assessment = "shoulder_flexion"  # Assessment type to perform
+                                # Options: shoulder_flexion, shoulder_abduction, elbow_flexion, 
+                                # hip_flexion, knee_extension, ankle_dorsiflexion, general
+px_to_m_from_person_id = 0    # Person ID to use for measurements (usually 0 for single person)
+px_to_m_person_height = 1.65  # Height of the person in meters (for pixels -> meters conversion)
+visible_side = ["side", "none"]  # Camera view: 'side', 'front', 'back', or 'none'
+                                 # 'none' keeps coordinates in 2D
+load_trc_px = ""              # Optional: Load pose from TRC file instead of running pose detection
+time_range = []               # Optional: [start_time, end_time] in seconds, or [] for entire video
+video_dir = ""                # Optional: Directory containing video files
+webcam_id = "0"                 # Webcam ID (0 is default)
+input_size = [1280, 720]      # Webcam resolution [width, height]
+
+
+[process]
+multiperson = false           # Set to true for multiple person tracking
+show_realtime_results = true  # Show real-time assessment visualization
+save_vid = true               # Save processed video
+save_img = false              # Save individual frames
+save_pose = true              # Save pose data
+calculate_angles = true       # Calculate joint angles
+save_angles = true            # Save angle data
+result_dir = ""               # Output directory (empty = current directory)
+
+
+[pose]
+slowmo_factor = 1             # For slow motion videos (e.g., 8 for 240fps recorded at 30fps)
+pose_model = "body_with_feet" # Options: body_with_feet, body, whole_body
+mode = "balanced"             # Options: lightweight, balanced, performance
+det_frequency = 4             # Detect pose every N frames (higher = faster but less accurate)
+device = "auto"               # Device for processing: auto, cpu, cuda, mps
+backend = "auto"              # Backend for pose detection: auto, openvino, onnxruntime
+tracking_mode = "rom"         # Tracking algorithm: rom, sports2d
+keypoint_likelihood_threshold = 0.3  # Minimum confidence for keypoint detection
+average_likelihood_threshold = 0.5   # Minimum average confidence for valid poses
+keypoint_number_threshold = 0.3      # Minimum fraction of valid keypoints required
+
+
+[px_to_meters_conversion]
+to_meters = true              # Convert pixels to meters
+calib_file = ""               # Optional: Path to calibration file
+floor_angle = "auto"          # Floor angle: 'auto' or value in degrees
+xy_origin = ["auto"]          # Image origin: ['auto'] or [x, y] in pixels
+
+
+[assessment]
+display_angle_values = true   # Display angle values on screen
+fontSize = 0.5                # Font size for text
+show_normal_rom = true        # Show normal ROM reference values
+show_progress_bar = true      # Show progress bar for assessment
+
+# Joints to track and measure
+joint_angles = [
+    "Right ankle",
+    "Left ankle",
+    "Right knee",
+    "Left knee",
+    "Right hip",
+    "Left hip",
+    "Right shoulder",
+    "Left shoulder",
+    "Right elbow",
+    "Left elbow"
+]
+
+# Normal ROM values for different assessments
+# Format: [min_angle, max_angle] in degrees
+normal_rom_thresholds = {
+    shoulder_flexion = [0, 180],
+    shoulder_abduction = [0, 180],
+    elbow_flexion = [0, 150],
+    hip_flexion = [0, 120],
+    knee_extension = [0, 135],
+    ankle_dorsiflexion = [0, 20]
+}
+
+correct_segment_angles_with_floor_angle = true  # Adjust for camera tilt
+
+
+[post-processing]
+interpolate = true                    # Interpolate missing data points
+interp_gap_smaller_than = 10          # Maximum gap size to interpolate
+fill_large_gaps_with = "last_value"   # How to fill larger gaps: last_value, nan, zeros
+filter = true                         # Apply filtering to data
+show_graphs = true                    # Show angle plots
+show_rom_metrics = true               # Display ROM metrics
+filter_type = "butterworth"           # Filter type: butterworth, gaussian, loess, median
+
+   [post-processing.butterworth]      # Butterworth filter parameters
+   order = 4 
+   cut_off_frequency = 6              # Hz
+
+   [post-processing.gaussian]         # Gaussian filter parameters
+   sigma_kernel = 1                   # Standard deviation
+
+   [post-processing.loess]            # LOESS filter parameters
+   nb_values_used = 5                 # Window size
+
+   [post-processing.median]           # Median filter parameters
+   kernel_size = 3                    # Kernel size
+
+
+[reporting]
+generate_report = true                # Generate assessment report
+save_metrics = true                   # Save ROM metrics
+compare_to_previous = false           # Compare with previous assessment
+previous_assessment = ""              # Path to previous assessment file
+report_format = "pdf"                 # Report format: pdf, html, json, txt, csv
+
+
+[logging]
+use_custom_logging = false            # Use custom logging configuration
+
+
+##########################
+# ASSESSMENT PRESETS     #
+##########################
+
+# These sections contain presets for specific assessments
+# They will be automatically applied when selecting the assessment type
+
+[assessment_presets.shoulder_flexion]
+description = "Assessment of shoulder flexion range of motion"
+instructions = "Raise your arm forward as high as possible"
+target_joints = ["shoulder"]
+primary_side = "both"
+
+[assessment_presets.shoulder_abduction]
+description = "Assessment of shoulder abduction range of motion"
+instructions = "Raise your arm sideways as high as possible"
+target_joints = ["shoulder"]
+primary_side = "both"
+
+[assessment_presets.elbow_flexion]
+description = "Assessment of elbow flexion range of motion"
+instructions = "Bend and straighten your elbow fully"
+target_joints = ["elbow"]
+primary_side = "both"
+
+[assessment_presets.hip_flexion]
+description = "Assessment of hip flexion range of motion"
+instructions = "Raise your knee toward your chest as far as comfortable"
+target_joints = ["hip"]
+primary_side = "both"
+
+[assessment_presets.knee_extension]
+description = "Assessment of knee extension range of motion"
+instructions = "Bend and straighten your knee completely"
+target_joints = ["knee"]
+primary_side = "both"
+
+[assessment_presets.ankle_dorsiflexion]
+description = "Assessment of ankle dorsiflexion range of motion"
+instructions = "Pull your foot upward toward your shin as far as possible"
+target_joints = ["ankle"]
+primary_side = "both"
+
+[assessment_presets.general]
+description = "General assessment of multiple joints"
+instructions = "Perform movement as instructed by your therapist"
+target_joints = ["shoulder", "elbow", "wrist", "hip", "knee", "ankle"]
+primary_side = "both"
+
+
+##########################
+# EVALUATION CRITERIA    #
+##########################
+
+# These criteria define how to interpret the assessment results
+
+[evaluation.shoulder_flexion]
+excellent = [160, 180]  # Range considered excellent performance (degrees)
+good = [140, 160]       # Range considered good performance
+fair = [120, 140]       # Range considered fair performance
+limited = [0, 120]      # Range considered limited performance
+clinical_concern = 90   # Threshold below which clinical attention is recommended
+
+[evaluation.shoulder_abduction]
+excellent = [160, 180]
+good = [140, 160]
+fair = [120, 140]
+limited = [0, 120]
+clinical_concern = 90
+
+[evaluation.elbow_flexion]
+excellent = [135, 150]
+good = [120, 135]
+fair = [100, 120]
+limited = [0, 100]
+clinical_concern = 80
+
+[evaluation.hip_flexion]
+excellent = [110, 120]
+good = [100, 110]
+fair = [80, 100]
+limited = [0, 80]
+clinical_concern = 60
+
+[evaluation.knee_extension]
+excellent = [125, 135]
+good = [115, 125]
+fair = [100, 115]
+limited = [0, 100]
+clinical_concern = 90
+
+[evaluation.ankle_dorsiflexion]
+excellent = [15, 20]
+good = [10, 15]
+fair = [5, 10]
+limited = [0, 5]
+clinical_concern = 3
+
+
+##########################
+# VISUALIZATION SETTINGS #
+##########################
+
+[visualization]
+color_normal = [0, 255, 0]       # Green for normal range
+color_limited = [0, 0, 255]      # Red for limited range
+color_skeleton = [255, 255, 255] # White for skeleton lines
+color_keypoints = [0, 0, 255]    # Red for keypoints
+show_instructions = true         # Show movement instructions on screen
+show_evaluation = true           # Show real-time evaluation feedback
+show_comparison = true           # Show comparison to normal ranges
+annotation_size = 0.5            # Size of annotations
+line_thickness = 2               # Thickness of skeleton lines
+keypoint_radius = 5              # Size of keypoint markers
+show_reference_angles = true     # Show reference angles for comparison
+show_angle_trajectory = true     # Show angle changes over time
+max_history_frames = 60          # Number of frames to keep in angle history
+
+
+##########################
+# EXERCISE PROTOCOL      #
+##########################
+
+[protocol]
+repetitions = 3                  # Number of repetitions to perform
+hold_time = 5                    # Time to hold at maximum ROM (seconds)
+rest_between_reps = 3            # Rest time between repetitions (seconds)
+warm_up_time = 5                 # Warm-up time before assessment (seconds)
+countdown_enabled = true         # Enable countdown before assessment
+audio_feedback = true            # Provide audio feedback during assessment
+guided_assessment = true         # Step-by-step guidance
+bilateral_comparison = true      # Compare left and right sides
+automatic_detection = true       # Automatically detect start/end of movement
+
+
+##########################
+# PROGRESS TRACKING      #
+##########################
+
+[progress]
+track_improvements = true        # Track improvements over time
+save_history = true              # Save assessment history
+baseline_required = false        # Require baseline assessment
+improvement_threshold = 5        # Minimum change to be considered improvement (degrees)
+goal_setting_enabled = true      # Enable setting ROM goals
+notification_on_goal = true      # Notify when goals are achieved

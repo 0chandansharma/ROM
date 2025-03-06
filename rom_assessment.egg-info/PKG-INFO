@@ -1,3 +1,51 @@
+Metadata-Version: 2.2
+Name: rom-assessment
+Version: 0.1.0
+Summary: Range of Motion Assessment Tool for Remote Physiotherapy
+Home-page: https://github.com/yourusername/ROM
+Author: Your Name
+Author-email: your.email@example.com
+License: MIT License
+Project-URL: Bug Tracker, https://github.com/yourusername/ROM/issues
+Project-URL: Documentation, https://github.com/yourusername/ROM#readme
+Keywords: physiotherapy,range of motion,joint angles,motion analysis,telehealth,remote assessment,rehabilitation,musculoskeletal,biomechanics
+Platform: any
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Healthcare Industry
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.19.0
+Requires-Dist: pandas>=1.0.0
+Requires-Dist: matplotlib>=3.1.0
+Requires-Dist: opencv-python>=4.5.0
+Requires-Dist: scipy>=1.5.0
+Requires-Dist: toml>=0.10.0
+Requires-Dist: tqdm>=4.45.0
+Requires-Dist: reportlab>=3.6.0
+Provides-Extra: rtmlib
+Requires-Dist: rtmlib>=0.1.0; extra == "rtmlib"
+Requires-Dist: onnxruntime>=1.7.0; extra == "rtmlib"
+Requires-Dist: openvino>=2022.1.0; extra == "rtmlib"
+Provides-Extra: mediapipe
+Requires-Dist: mediapipe>=0.8.0; extra == "mediapipe"
+Provides-Extra: visualization
+Requires-Dist: plotly>=4.14.0; extra == "visualization"
+Requires-Dist: seaborn>=0.11.0; extra == "visualization"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-python
+Dynamic: summary
+
 # ROM
 
 # ROM: Range of Motion Assessment Tool
